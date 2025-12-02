@@ -4,14 +4,19 @@
         Title="سجل العمليات" Height="600" Width="900" WindowStartupLocation="CenterOwner" FlowDirection="RightToLeft">
 
     <Grid Margin="10">
-        <DataGrid x:Name="TransactionsGrid" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="التاريخ" Binding="{Binding CreatedAt, StringFormat=d}" Width="120" />
-                <DataGridTextColumn Header="الوقت" Binding="{Binding CreatedAt, StringFormat=T}" Width="100" />
-                <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount}" Width="120" />
-                <DataGridTextColumn Header="المرجع" Binding="{Binding InvoiceRef}" Width="150" />
-                <DataGridTextColumn Header="الكاشير" Binding="{Binding CashierName}" Width="150" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
+                <Button Content="تصدير CSV" Click="OnExportCsvClick" Style="{StaticResource FlatButton}" Width="120" />
+            </StackPanel>
+            <DataGrid x:Name="TransactionsGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="None">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="التاريخ" Binding="{Binding CreatedAt, StringFormat=d}" Width="120" />
+                    <DataGridTextColumn Header="الوقت" Binding="{Binding CreatedAt, StringFormat=T}" Width="100" />
+                    <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount}" Width="120" />
+                    <DataGridTextColumn Header="المرجع" Binding="{Binding InvoiceRef}" Width="150" />
+                    <DataGridTextColumn Header="الكاشير" Binding="{Binding CashierName}" Width="150" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </Window>

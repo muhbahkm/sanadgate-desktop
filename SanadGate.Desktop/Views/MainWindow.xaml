@@ -11,52 +11,41 @@
 
     <Window.Resources>
         <Style x:Key="ArabicTextBlock" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontFamily" Value="{StaticResource AppArabicFont}" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Foreground" Value="#333333" />
+            <Setter Property="Language" Value="ar-YE" />
+            <Setter Property="Typography.NumeralStyle" Value="Normal" />
         </Style>
 
         <Style x:Key="ArabicTextBox" TargetType="TextBox">
-            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontFamily" Value="{StaticResource AppArabicFont}" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Padding" Value="12,8" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="#CCCCCC" />
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="#333333" />
+            <Setter Property="Language" Value="ar-YE" />
+            <Setter Property="Typography.NumeralStyle" Value="Normal" />
         </Style>
 
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="Segoe UI" />
+        <Style x:Key="FlatButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource AppArabicFont}" />
             <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Padding" Value="20,12" />
-            <Setter Property="Background" Value="#2E7D32" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Background" Value="#f2f2f2" />
+            <Setter Property="BorderBrush" Value="#333333" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Height" Value="55" />
+            <Setter Property="Width" Value="140" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
 
-        <Style x:Key="SecondaryButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Padding" Value="20,12" />
-            <Setter Property="Background" Value="#757575" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Cursor" Value="Hand" />
-        </Style>
-
-        <Style x:Key="SettingsButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Padding" Value="20,12" />
-            <Setter Property="Background" Value="#1976D2" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Cursor" Value="Hand" />
+        <Style x:Key="SecondaryFlatButton" TargetType="Button" BasedOn="{StaticResource FlatButton}">
+            <Setter Property="Width" Value="140" />
         </Style>
     </Window.Resources>
 
@@ -80,28 +69,33 @@
                         <Image Source="{Binding QrCodeImage}" Width="500" Height="500" Margin="0,0,0,15" />
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="اسم المتجر:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="100" />
+                                <TextBlock Text="اسم المتجر:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="120" />
                                 <TextBlock Text="{Binding MerchantName}" Style="{StaticResource ArabicTextBlock}" />
                             </StackPanel>
                             <TextBlock Height="8" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="رقم الحساب:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="100" />
+                                <TextBlock Text="رقم الحساب:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="120" />
                                 <TextBlock Text="{Binding MerchantAccount}" Style="{StaticResource ArabicTextBlock}" />
                             </StackPanel>
                             <TextBlock Height="8" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="الرقم المرجعي:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="100" />
+                                <TextBlock Text="الرقم المرجعي:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="120" />
                                 <TextBlock Text="{Binding InvoiceReference}" Style="{StaticResource ArabicTextBlock}" />
                             </StackPanel>
                             <TextBlock Height="8" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="المبلغ:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="100" />
+                                <TextBlock Text="المبلغ:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="120" />
                                 <TextBlock Text="{Binding TotalAmount}" Style="{StaticResource ArabicTextBlock}" />
                             </StackPanel>
                             <TextBlock Height="8" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="العملة:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="100" />
+                                <TextBlock Text="العملة:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" Width="120" />
                                 <TextBlock Text="{Binding Currency}" Style="{StaticResource ArabicTextBlock}" />
+                            </StackPanel>
+                            <TextBlock Height="12" />
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="اسم الكاشير:" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" />
+                                <TextBox Text="{Binding CashierName, UpdateSourceTrigger=PropertyChanged}" Height="35" FontSize="18" Width="220" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -116,22 +110,18 @@
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="* إجمالي المبلغ" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" />
                     <TextBlock Height="8" />
-                    <TextBox Text="{Binding TotalAmount, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ArabicTextBox}" />
+                    <TextBox Text="{Binding TotalAmount, UpdateSourceTrigger=PropertyChanged}" Height="50" FontSize="26" Width="420" InputScope="Number" />
                 </StackPanel>
                 <TextBlock Height="20" />
 
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="الرقم المرجعي للفاتورة" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" />
                     <TextBlock Height="8" />
-                    <TextBox Text="{Binding InvoiceReference, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ArabicTextBox}" />
+                    <TextBox Text="{Binding InvoiceReference, UpdateSourceTrigger=PropertyChanged}" Height="50" FontSize="26" Width="420" />
                 </StackPanel>
                 <TextBlock Height="20" />
 
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="اسم الكاشير" Style="{StaticResource ArabicTextBlock}" FontWeight="Medium" />
-                    <TextBlock Height="8" />
-                    <TextBox Text="{Binding CashierName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ArabicTextBox}" />
-                </StackPanel>
+                
                 <TextBlock Height="20" />
 
                 <StackPanel Orientation="Vertical">
@@ -143,15 +133,15 @@
         </Grid>
 
         <!-- Bottom Panel - Action Buttons -->
-        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
+            <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,20">
-                <Button Content="✓ تم الدفع" Style="{StaticResource PrimaryButton}" Width="160" Click="OnPayClick" />
+                <Button Content="_تم الدفع (Alt+Enter)" Style="{StaticResource FlatButton}" Click="OnPayClick" />
                 <TextBlock Width="15" />
-                <Button Content="✕ إلغاء" Style="{StaticResource SecondaryButton}" Width="140" Click="OnCancelClick" />
+                <Button Content="_إلغاء (Esc)" Style="{StaticResource FlatButton}" Click="OnCancelClick" />
                 <TextBlock Width="15" />
-                <Button Content="سجل العمليات" Style="{StaticResource SettingsButton}" Width="140" Click="OnHistoryClick" ToolTip="Alt+H" />
+                <Button Content="_سجل العمليات (Ctrl+H)" Style="{StaticResource FlatButton}" Click="OnHistoryClick" />
                 <TextBlock Width="15" />
-                <Button Content="⚙ الإعدادات" Style="{StaticResource SettingsButton}" Width="140" Click="OnSettingsClick" ToolTip="Alt+S" />
+                <Button Content="_الإعدادات (Ctrl+S)" Style="{StaticResource FlatButton}" Click="OnSettingsClick" />
             </StackPanel>
         </Border>
     </Grid>

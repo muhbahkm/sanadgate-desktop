@@ -67,16 +67,16 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Alt+S -> Settings
-        if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Alt) != 0)
+        // Ctrl+S -> Settings
+        if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
         {
             OpenSettingsWindow();
             e.Handled = true;
             return;
         }
 
-        // Alt+H -> History
-        if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Alt) != 0)
+        // Ctrl+H -> History
+        if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
         {
             OpenHistoryWindow();
             e.Handled = true;

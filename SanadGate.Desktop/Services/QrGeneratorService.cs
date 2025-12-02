@@ -12,37 +12,54 @@ namespace SanadGate.Desktop.Services;
 public class QrGeneratorService
 {
     /// <summary>
-    /// Generates a high-resolution QR code PNG (700x700) at 300 DPI and returns it as a WPF BitmapImage.
-    /// Payload is encoded using UTF-8.
+    /// Generates a high-resolution QR code PNG (800x800) at 300 DPI and returns it as a WPF BitmapImage.
+    /// Payload is encoded using UTF-8 and only includes the specified reduced fields.
     /// </summary>
     public BitmapImage? GenerateQrCode(Dictionary<string, object> data)
     {
         try
         {
-            var jsonString = JsonConvert.SerializeObject(data);
+            // Build minimal payload with required keys
+            var payloadObj = new Dictionary<string, object>
+            {
+                { "amount", data.ContainsKey("amount") ? data["amount"] : 0 },
+                { "ref", data.ContainsKey("ref") ? data["ref"] : data.GetValueOrDefault("invoiceRef", "") },
+                { "cashier", data.ContainsKey("cashier") ? data["cashier"] : data.GetValueOrDefault("cashier", "") },
+                { "merchant", data.ContainsKey("merchant") ? data["merchant"] : data.GetValueOrDefault("merchantName", "") },
+                { "account", data.ContainsKey("account") ? data["account"] : data.GetValueOrDefault("merchantAccount", "") }
+            };
+
+            var jsonString = JsonConvert.SerializeObject(payloadObj);
 
             using var qrGenerator = new QRCodeGenerator();
-            // force UTF8 encoding when possible
-            var qrCodeData = qrGenerator.CreateQrCode(jsonString, QRCodeGenerator.ECCLevel.Q, true);
+            // Use ECC Level M and enforce UTF8
+            var qrCodeData = qrGenerator.CreateQrCode(jsonString, QRCodeGenerator.ECCLevel.M, true);
 
             using var qrCode = new QRCode(qrCodeData);
-            // initial module size; we'll resize to exact 700px afterwards
+            // Generate raw bitmap (modules * pixelsPerModule)
             using var rawBitmap = qrCode.GetGraphic(20, System.Drawing.Color.Black, System.Drawing.Color.White, true);
 
-            // Resize to 700x700 with high quality and set DPI to 300
-            using var resized = new Bitmap(700, 700);
-            resized.SetResolution(300, 300);
-            using (var g = Graphics.FromImage(resized))
+            // Add white quiet zone (border) of 40px around raw bitmap, then resize to 800x800
+            int targetSize = 800;
+            int quietZone = 40;
+
+            // Create bitmap with white background and centered QR with quiet zone
+            using var canvas = new Bitmap(targetSize, targetSize);
+            canvas.SetResolution(300, 300);
+            using (var g = Graphics.FromImage(canvas))
             {
                 g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                 g.Clear(System.Drawing.Color.White);
-                g.DrawImage(rawBitmap, 0, 0, 700, 700);
+
+                // compute scaled size for rawBitmap to fit with quiet zone
+                int innerSize = targetSize - 2 * quietZone;
+                g.DrawImage(rawBitmap, quietZone, quietZone, innerSize, innerSize);
             }
 
             using var ms = new MemoryStream();
-            resized.Save(ms, ImageFormat.Png);
+            canvas.Save(ms, ImageFormat.Png);
             ms.Seek(0, SeekOrigin.Begin);
 
             var bitmap = new BitmapImage();
@@ -60,4 +77,20 @@ public class QrGeneratorService
             return null;
         }
     }
+
+    // Test QR generator with fixed values for readability validation
+    public BitmapImage? GenerateTestQr()
+    {
+        var data = new Dictionary<string, object>
+        {
+            { "amount", 123.45m },
+            { "ref", "TESTREF12345" },
+            { "cashier", "TestCashier" },
+            { "merchant", "TestMerchant" },
+            { "account", "000111222" }
+        };
+
+        return GenerateQrCode(new Dictionary<string, object>(data));
+    }
 }
+

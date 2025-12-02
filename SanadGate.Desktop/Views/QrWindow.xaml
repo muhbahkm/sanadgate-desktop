@@ -1,7 +1,7 @@
 <Window x:Class="SanadGate.Desktop.Views.QrWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="QR Preview" WindowStyle="None" WindowState="Maximized" Topmost="True" Background="White" FlowDirection="RightToLeft">
+        Title="QR Preview" WindowStyle="None" WindowState="Maximized" Topmost="True" Background="White" FlowDirection="RightToLeft" AllowsTransparency="True" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -9,11 +9,9 @@
             <ColumnDefinition Width="420" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Image x:Name="QrImage" Width="700" Height="700" Stretch="Uniform" />
-        </Border>
-
-        <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Center">
+            <Border Grid.Column="0" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image x:Name="QrImage" Width="800" Height="800" Stretch="None" />
+        </Border>        <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Center">
             <TextBlock Text="ملخص الفاتورة" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" />
             <TextBlock x:Name="TxtMerchant" Text="" />
             <TextBlock x:Name="TxtAmount" Text="" />
