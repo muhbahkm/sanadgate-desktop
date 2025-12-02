@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="assets/fonts/*" />
+    <Resource Include="assets/fonts/IBMPlexSansArabic-Regular.ttf" />
   </ItemGroup>
 
 </Project>

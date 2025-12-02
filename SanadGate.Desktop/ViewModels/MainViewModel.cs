@@ -45,9 +45,10 @@ public class MainViewModel : ViewModelBase
         };
 
         // Initialize commands
-        ProcessPaymentCommand = new RelayCommand(_ => ProcessPayment(), _ => CanProcessPayment());
-        CancelCommand = new RelayCommand(_ => Cancel());
-        SettingsCommand = new RelayCommand(_ => OpenSettings());
+            ProcessPaymentCommand = new RelayCommand(_ => ProcessPayment(), _ => CanProcessPayment());
+            CancelCommand = new RelayCommand(_ => Cancel());
+            SettingsCommand = new RelayCommand(_ => { /* handled by view */ });
+            HistoryCommand = new RelayCommand(_ => { /* handled by view */ });
     }
 
     // Properties
@@ -97,6 +98,8 @@ public class MainViewModel : ViewModelBase
         set => SetProperty(ref _qrCodeImage, value);
     }
 
+        public ICommand HistoryCommand { get; }
+
     public string MerchantName
     {
         get => _merchantName;
@@ -123,7 +126,7 @@ public class MainViewModel : ViewModelBase
         _debounceTimer.Start();
     }
 
-    private void GenerateQrCode()
+    public void GenerateQrCode()
     {
         if (string.IsNullOrWhiteSpace(_totalAmount) || !decimal.TryParse(_totalAmount, out var amount))
         {
@@ -171,7 +174,7 @@ public class MainViewModel : ViewModelBase
 
         try
         {
-            _sqliteService.SaveTransaction(transaction);
+                _sqliteService.InsertTransaction(transaction);
             ClearFields();
             // TODO: Show confirmation message
         }

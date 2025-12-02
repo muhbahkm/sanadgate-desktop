@@ -1,7 +1,10 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using Newtonsoft.Json;
 using SanadGate.Desktop.ViewModels;
+using SanadGate.Desktop.Views;
+using SanadGate.Desktop.Models;
 
 namespace SanadGate.Desktop.Views;
 
@@ -32,25 +35,88 @@ public partial class MainWindow : Window
     protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
     {
         base.OnKeyDown(e);
-
-        // Ctrl+S to save
-        if (e.Key == System.Windows.Input.Key.Return && 
-            (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Alt) != 0)
+        // Alt+Enter => Process Payment (legacy)
+        if (e.Key == Key.Return && (Keyboard.Modifiers & ModifierKeys.Alt) != 0)
         {
             _viewModel.ProcessPaymentCommand.Execute(null);
+            e.Handled = true;
+            return;
+        }
+
+        // Enter -> regenerate QR immediately
+        if (e.Key == Key.Return && (Keyboard.Modifiers & ModifierKeys.Alt) == 0)
+        {
+            _viewModel.GenerateQrCode();
+            e.Handled = true;
+            return;
         }
 
         // Esc to cancel
-        if (e.Key == System.Windows.Input.Key.Escape)
+        if (e.Key == Key.Escape)
         {
             _viewModel.CancelCommand.Execute(null);
+            e.Handled = true;
+            return;
         }
 
-        // F2 for settings
-        if (e.Key == System.Windows.Input.Key.F2)
+        // F2 -> Open full-screen QR window
+        if (e.Key == Key.F2)
+        {
+            OpenQrWindow();
+            e.Handled = true;
+            return;
+        }
+
+        // Alt+S -> Settings
+        if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Alt) != 0)
         {
             OpenSettingsWindow();
+            e.Handled = true;
+            return;
         }
+
+        // Alt+H -> History
+        if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Alt) != 0)
+        {
+            OpenHistoryWindow();
+            e.Handled = true;
+            return;
+        }
+    }
+
+    private void OpenQrWindow()
+    {
+        // Build payload mirroring the view model
+        var data = new System.Collections.Generic.Dictionary<string, object>
+        {
+            { "amount", decimal.TryParse(_viewModel.TotalAmount, out var am) ? am : 0m },
+            { "invoiceRef", _viewModel.InvoiceReference },
+            { "merchantName", _viewModel.MerchantName },
+            { "merchantAccount", _viewModel.MerchantAccount },
+            { "cashier", _viewModel.CashierName },
+            { "notes", _viewModel.Notes },
+            { "timestamp", System.DateTime.UtcNow.ToString("o") }
+        };
+
+        var payload = JsonConvert.SerializeObject(data);
+
+        var invoice = new InvoiceModel
+        {
+            ReferenceNumber = _viewModel.InvoiceReference,
+            Amount = decimal.TryParse(_viewModel.TotalAmount, out var amt) ? amt : 0m,
+            CashierName = _viewModel.CashierName,
+            MerchantName = _viewModel.MerchantName,
+            MerchantAccount = _viewModel.MerchantAccount,
+            Notes = _viewModel.Notes
+        };
+
+        var qr = new QrWindow();
+        qr.Owner = this;
+        // ShowQr will display the dialog and block until closed
+        qr.ShowQr(payload, invoice);
+        // If dialog closed with true (Enter), process payment
+        if (qr.DialogResult == true)
+            _viewModel.ProcessPaymentCommand.Execute(null);
     }
 
     private void OpenSettingsWindow()
@@ -66,5 +132,32 @@ public partial class MainWindow : Window
 
         settingsWindow.Owner = this;
         settingsWindow.ShowDialog();
+    }
+
+    private void OpenHistoryWindow()
+    {
+        var history = new HistoryWindow();
+        history.Owner = this;
+        history.ShowDialog();
+    }
+
+    private void OnPayClick(object sender, RoutedEventArgs e)
+    {
+        _viewModel.ProcessPaymentCommand.Execute(null);
+    }
+
+    private void OnCancelClick(object sender, RoutedEventArgs e)
+    {
+        _viewModel.CancelCommand.Execute(null);
+    }
+
+    private void OnSettingsClick(object sender, RoutedEventArgs e)
+    {
+        OpenSettingsWindow();
+    }
+
+    private void OnHistoryClick(object sender, RoutedEventArgs e)
+    {
+        OpenHistoryWindow();
     }
 }

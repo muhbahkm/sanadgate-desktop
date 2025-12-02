@@ -23,6 +23,16 @@ public class SettingsService
         _settings = settings;
         var json = JsonSerializer.Serialize(_settings, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_settingsPath, json);
+        try
+        {
+            // Also persist to sqlite settings table for quick retrieval
+            var sqlite = new SqliteService();
+            sqlite.SaveSettings("appsettings", json);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Warning: failed to save settings to sqlite: {ex.Message}");
+        }
     }
 
     private AppSettings LoadSettings()

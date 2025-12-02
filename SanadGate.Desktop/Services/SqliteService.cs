@@ -34,11 +34,17 @@ public class SqliteService
                 Status TEXT,
                 CreatedAt TEXT
             );
+
+            CREATE TABLE IF NOT EXISTS Settings (
+                Key TEXT PRIMARY KEY,
+                JsonValue TEXT,
+                UpdatedAt TEXT
+            );
         ";
         command.ExecuteNonQuery();
     }
 
-    public void SaveTransaction(TransactionRecord transaction)
+    public void InsertTransaction(TransactionRecord transaction)
     {
         using var connection = new SQLiteConnection(_connectionString);
         connection.Open();
@@ -59,6 +65,24 @@ public class SqliteService
         command.Parameters.AddWithValue("@Status", transaction.Status);
         command.Parameters.AddWithValue("@CreatedAt", transaction.CreatedAt.ToString("o"));
 
+        command.ExecuteNonQuery();
+    }
+
+    public void SaveSettings(string key, string json)
+    {
+        using var connection = new SQLiteConnection(_connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+            INSERT INTO Settings (Key, JsonValue, UpdatedAt)
+            VALUES (@Key, @JsonValue, @UpdatedAt)
+            ON CONFLICT(Key) DO UPDATE SET JsonValue = excluded.JsonValue, UpdatedAt = excluded.UpdatedAt;
+        ";
+
+        command.Parameters.AddWithValue("@Key", key);
+        command.Parameters.AddWithValue("@JsonValue", json);
+        command.Parameters.AddWithValue("@UpdatedAt", DateTime.UtcNow.ToString("o"));
         command.ExecuteNonQuery();
     }
 
@@ -90,5 +114,22 @@ public class SqliteService
         }
 
         return transactions;
+    }
+
+    // Optional helper to retrieve settings by key
+    public string? GetSettingJson(string key)
+    {
+        using var connection = new SQLiteConnection(_connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT JsonValue FROM Settings WHERE Key = @Key LIMIT 1";
+        command.Parameters.AddWithValue("@Key", key);
+
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
+            return reader[0].ToString();
+
+        return null;
     }
 }
