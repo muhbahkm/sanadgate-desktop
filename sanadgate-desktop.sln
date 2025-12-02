@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SanadGate.Desktop", "SanadGate.Desktop\SanadGate.Desktop.csproj", "{95BB3716-5D68-D55C-0724-C4DF521B250D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95BB3716-5D68-D55C-0724-C4DF521B250D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95BB3716-5D68-D55C-0724-C4DF521B250D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95BB3716-5D68-D55C-0724-C4DF521B250D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95BB3716-5D68-D55C-0724-C4DF521B250D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A36072E9-4B8B-4014-AE76-D02000C69890}
+	EndGlobalSection
+EndGlobal
